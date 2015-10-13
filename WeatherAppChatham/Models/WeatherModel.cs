@@ -79,8 +79,8 @@ namespace WeatherAppChatham.Models
 
                 DateTime UnixTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 this.time = UnixTime.AddSeconds(forecast.daily.data[index].time).ToLocalTime().ToLongDateString();
-                this.SunriseTime = UnixTime.AddSeconds(forecast.daily.data[index].sunriseTime).ToLocalTime().ToLongTimeString();
-                this.SunsetTime = UnixTime.AddSeconds(forecast.daily.data[index].sunsetTime).ToLocalTime().ToLongTimeString();
+                this.SunriseTime = UnixTime.AddSeconds(forecast.daily.data[index].sunriseTime).ToLongTimeString();
+                this.SunsetTime = UnixTime.AddSeconds(forecast.daily.data[index].sunsetTime).ToLongTimeString();
             }
 
             public DailyForecast(dynamic weather, dynamic planner, dynamic astronomy, int index)

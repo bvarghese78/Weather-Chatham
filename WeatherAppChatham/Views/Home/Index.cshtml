@@ -7,8 +7,24 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootcards/1.0.0/js/bootcards.min.js"></script>
 </head>
 <body ng-controller="weatherCtrl" class="container">
-    <h1>Start Page</h1>
+    <h1>Weather App</h1>
     <div class="form-group">
+        <fieldset>
+            <legend>Choose weather source</legend>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-offset-4">
+                        <div class="form-group">
+                            <label class="radio-inline"><input type="radio" name="weatherSource" value="forecastIO" ng-model="weatherSource" ng-click="navigateTo()" />Forecast IO</label>
+                            <label class="radio-inline"><input type="radio" name="weatherSource" value="wunderground" ng-model="weatherSource" ng-click="navigateTo()" />Weather Underground</label>
+
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
         <div class="col-lg-4">
             <input type="text" class="form-control" placeholder="Enter a location" ng-model="address" />
         </div>

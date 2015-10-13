@@ -7,14 +7,27 @@
         daily: null,
         address: $scope.locationName
     }
-    weatherService.getForecastIO($scope.mvcmodel).then(function (results) {
-        $scope.forecastIOInfo = results.data;
-        findIcon($scope.forecastIOInfo.currentWeather.icon);
 
-        $state.go('forecastio.location', { locationName: $scope.locationName });
-    }, function (err) {
-        toastr.error("Error retrieving weather info from forecast.io" + err);
-    });
+    if ($scope.weatherSource == "forecastIO") {
+        weatherService.getForecastIO($scope.mvcmodel).then(function (results) {
+            $scope.forecastIOInfo = results.data;
+            findIcon($scope.forecastIOInfo.currentWeather.icon);
+
+            $state.go('forecastio.location', { locationName: $scope.locationName });
+        }, function (err) {
+            toastr.error("Error retrieving weather info from forecast.io" + err);
+        });
+    } else {
+        weatherService.getWUnderground($scope.mvcmodel).then(function (results) {
+            $scope.forecastIOInfo = results.data;
+            findIcon($scope.forecastIOInfo.currentWeather.icon);
+
+            $state.go('forecastio.location', { locationName: $scope.locationName });
+        }, function (err) {
+            toastr.error("Error retrieving weather info from weather underground" + err);
+        });
+    }
+    
 
     function findIcon(iconName) {
         switch (iconName) {
