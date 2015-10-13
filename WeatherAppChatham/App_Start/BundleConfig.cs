@@ -18,6 +18,7 @@ namespace WeatherAppChatham
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/Site.css",
+                      "~/Content/angular-toastr.css",
                       "~/Content/weathericons/weather-icons.min.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
@@ -26,6 +27,7 @@ namespace WeatherAppChatham
 
             bundles.Add(new ScriptBundle("~/bundles/weatherApp")
                 .Include("~/app/init.js")
+                .Include("~/Scripts/angular-toastr.tpls.js")
                 .IncludeDirectory("~/app/Controller", "*.js")
                 .IncludeDirectory("~/app/Service", "*.js"));
         }

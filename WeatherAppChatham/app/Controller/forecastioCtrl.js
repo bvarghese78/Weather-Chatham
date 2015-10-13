@@ -1,4 +1,4 @@
-﻿app.controller("forecastioCtrl", function ($scope, $stateParams, weatherService) {
+﻿app.controller("forecastioCtrl", function ($scope, $stateParams, weatherService, toastr) {
     if ($stateParams.locationName) {
         $scope.locationName = $stateParams.locationName;
     }
@@ -13,7 +13,7 @@
 
         $state.go('forecastio.location', { locationName: $scope.locationName });
     }, function (err) {
-        alert(err);
+        toastr.error("Error retrieving weather info from forecast.io" + err);
     });
 
     function findIcon(iconName) {

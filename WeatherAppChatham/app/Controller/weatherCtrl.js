@@ -1,4 +1,4 @@
-﻿app.controller('weatherCtrl', function ($scope, $stateParams, $state, weatherService) {
+﻿app.controller('weatherCtrl', function ($scope, $stateParams, $state, weatherService, toastr) {
     $scope.employee = weatherService.employee;
 
     $scope.navigateTo = function () {
@@ -11,7 +11,7 @@
 
     $scope.search = function () {
         if (!$scope.address) {
-            alert("Enter an address to search");
+            toastr.error("Enter an address to search");
             return;
         }
         

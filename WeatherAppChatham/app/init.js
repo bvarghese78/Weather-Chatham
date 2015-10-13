@@ -1,4 +1,4 @@
-﻿var app = angular.module('weatherAppChatham', ['ui.router']);
+﻿var app = angular.module('weatherAppChatham', ['ui.router', 'toastr']);
 
 // Routing
 app.config(function ($stateProvider, $urlRouterProvider) {
