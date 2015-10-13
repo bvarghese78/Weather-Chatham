@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html ng-app="weatherAppChatham">
+<head>
+    <title>Weather App</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootcards/1.0.0/css/bootcards-desktop.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootcards/1.0.0/js/bootcards.min.js"></script>
+</head>
+<body ng-controller="weatherCtrl" class="container">
+    <h1>Start Page</h1>
+    <div class="form-group">
+        <div class="col-lg-4">
+            <input type="text" class="form-control" placeholder="Enter a location" ng-model="address" />
+        </div>
+
+        <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
+
+    </div>
+    <br />
+
+    <div ui-view="center"></div>
+
+    @Scripts.Render("~/bundles/angular")
+    @Scripts.Render("~/bundles/weatherApp")
+</body>
+</html>

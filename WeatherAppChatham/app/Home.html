@@ -1,0 +1,14 @@
+﻿<fieldset>
+    <legend>Choose weather source</legend>
+    <div class="form-group">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-9">
+            <label class="radio-inline"><input type="radio" name="weatherSource" value="forecastIO" ng-model="weatherSource" ng-click="navigateTo()" />Forecast IO</label>
+            <label class="radio-inline"><input type="radio" name="weatherSource" value="wunderground" ng-model="weatherSource" ng-click="navigateTo()" />Weather Underground</label>
+
+            <br />
+        </div>
+
+        {{weatherSource}}
+    </div>
+</fieldset>
