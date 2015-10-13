@@ -9,6 +9,8 @@ using WeatherAppChatham.Models;
 using ForecastIO;
 using RestSharp;
 using System.Configuration;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace WeatherAppChatham.Controllers
 {
@@ -69,7 +71,7 @@ namespace WeatherAppChatham.Controllers
             }
         }
 
-        public ActionResult GetWUnderground(WeatherModel weather)
+        public async Task<ActionResult> GetWUnderground(WeatherModel weather)
         {
             try
             {
@@ -80,7 +82,7 @@ namespace WeatherAppChatham.Controllers
                 string formattedAddress;
                 
                 FindAddress(address, out lat, out lon, out formattedAddress);
-                WeatherModel forecast = GetWUnderground(apiKey, formattedAddress);
+                WeatherModel forecast = await GetWUnderground(apiKey, formattedAddress);
 
                 var camelCaseFormatter = new JsonSerializerSettings();
                 camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -178,30 +180,60 @@ namespace WeatherAppChatham.Controllers
             return weather;
         }
 
-        private WeatherModel GetWUnderground(string apiKey, string addr)
+        private async Task<WeatherModel> GetWUnderground(string apiKey, string addr)
         {
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
+            var ctsDaily = new CancellationTokenSource();
+            var ctsCC = new CancellationTokenSource();
+            var ctsPlanner = new CancellationTokenSource();
+            var ctsAstronomy = new CancellationTokenSource();
 
             // 7 Day weather
+            var dailyResults = WUndergroundDaily(apiKey, ctsDaily);
+
+            // Current conditions
+            var currentConditionResults =  WUndergroundCurrCondition(apiKey, ctsCC);
+
+            // Planner (chance of precipitation)
+            var plannerResults =  WUndergroundPlanner(apiKey, ctsPlanner);
+            
+            // Astronomy
+            var astronomyResults = WUndergroundAstronomy(apiKey, ctsAstronomy);
+
+            await dailyResults;
+            await currentConditionResults;
+            await plannerResults;
+            await astronomyResults;
+            
+            WeatherModel weather = new WeatherModel(currentConditionResults.Result, dailyResults.Result, plannerResults.Result, astronomyResults.Result, addr);
+            return weather;
+        }
+
+        private async Task<dynamic> WUndergroundDaily(string apiKey, CancellationTokenSource ctsDaily)
+        {
             string dailyUrl = apiKey + "/forecast10day/q/";
             dailyUrl = FormatAddress(dailyUrl);
 
             RestClient dailyClient = new RestClient(WUNDERGROUND_URL);
             RestRequest dailyRequest = new RestRequest("/api/" + dailyUrl, Method.GET);
-            var dailyResult = dailyClient.Execute(dailyRequest);
+            var dailyResult = await dailyClient.ExecuteTaskAsync(dailyRequest, ctsDaily.Token);
             var dailyResults = JsonConvert.DeserializeObject<dynamic>(dailyResult.Content);
+            return dailyResults;
+        }
 
-            // Current conditions
+        private async Task<dynamic> WUndergroundCurrCondition(string apiKey, CancellationTokenSource ctsCC)
+        {
             string currentConditionUrl = apiKey + "/conditions/q/";
             currentConditionUrl = FormatAddress(currentConditionUrl);
 
             RestClient currentConditionClient = new RestClient(WUNDERGROUND_URL);
             RestRequest currentConditionRequest = new RestRequest("/api/" + currentConditionUrl, Method.GET);
-            RestResponse currentConditionResult = (RestResponse)currentConditionClient.Execute(currentConditionRequest);
+            var currentConditionResult = await currentConditionClient.ExecuteTaskAsync(currentConditionRequest, ctsCC.Token);
             var currentConditionResults = JsonConvert.DeserializeObject<dynamic>(currentConditionResult.Content);
+            return currentConditionResults;
+        }
 
-            // Planner (chance of precipitation
+        private async Task<dynamic> WUndergroundPlanner(string apiKey, CancellationTokenSource ctsPlanner)
+        {
             string plannerUrl = apiKey + "/planner_";
             string tempUrl = FormatAddress(plannerUrl);
             DateTime now = DateTime.Now;
@@ -211,23 +243,21 @@ namespace WeatherAppChatham.Controllers
 
             RestClient plannerClient = new RestClient(WUNDERGROUND_URL);
             RestRequest plannerRequest = new RestRequest("/api/" + plannerUrl, Method.GET);
-            RestResponse plannerResult = (RestResponse)plannerClient.Execute(plannerRequest);
+            var plannerResult = await plannerClient.ExecuteTaskAsync(plannerRequest, ctsPlanner.Token);
             var plannerResults = JsonConvert.DeserializeObject<dynamic>(plannerResult.Content);
+            return plannerResults;
+        }
 
-            // Astronomy
+        private async Task<dynamic> WUndergroundAstronomy(string apiKey, CancellationTokenSource ctsAstronomy)
+        {
             string astronomyUrl = apiKey + "/astronomy/q/";
             astronomyUrl = FormatAddress(astronomyUrl);
 
             RestClient astronomyClient = new RestClient(WUNDERGROUND_URL);
             RestRequest astronomyRequest = new RestRequest("/api/" + astronomyUrl, Method.GET);
-            RestResponse astronomyResult = (RestResponse)astronomyClient.Execute(astronomyRequest);
+            var astronomyResult = await astronomyClient.ExecuteTaskAsync(astronomyRequest, ctsAstronomy.Token);
             var astronomyResults = JsonConvert.DeserializeObject<dynamic>(astronomyResult.Content);
-
-            stopwatch.Stop();
-            
-            
-            WeatherModel weather = new WeatherModel(currentConditionResults, dailyResults, plannerResults, astronomyResults, addr);
-            return weather;
+            return astronomyResults;
         }
     }
 }
