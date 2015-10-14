@@ -14,7 +14,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             }
         })
         .state('forecastio', {
-            url: '/forecastio',
+            url: '/weather',
             views: {
                 'center': {
                     templateUrl: "/app/forecastio.html",
@@ -23,7 +23,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             }
         })
         .state('forecastio.location', {
-            url: '/{locationName}',
+            url: '/{sourceName}/{locationName}',
             views: {
                 'center@': {
                     templateUrl: "/app/forecastio.html",

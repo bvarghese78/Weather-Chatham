@@ -17,29 +17,10 @@ namespace WeatherAppChatham.Controllers
     public class WeatherController : Controller
     {
         private const string WUNDERGROUND_URL = "http://api.wunderground.com";
-        string _forecastAPI = null;
-        private static string _wundergroundAPI;
         AddressModel addrOutput = null;
 
-        private string forecastAPI
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_forecastAPI))
-                    _forecastAPI = ConfigurationManager.AppSettings["forecastAPIKey"];
-                return _forecastAPI;
-            }
-        }
-
-        private static string wundergroundAPIProp
-        {
-            get
-            {
-                _wundergroundAPI = ConfigurationManager.AppSettings["wundergroundAPIKey"];
-                return _wundergroundAPI;
-            }
-        }
-
+        // Gets weather using Forecast.IO API
+        [HttpPost]
         public ActionResult GetForecastIO(WeatherModel weather)
         {
             try
@@ -49,6 +30,7 @@ namespace WeatherAppChatham.Controllers
                 double lon;
                 string formattedAddress;
                 
+                // Retrieves address, lat, and lon using Google's Geo Code API
                 FindAddress(address, out lat, out lon, out formattedAddress);
 
                 // Get weather info from Forecast.io
@@ -70,16 +52,18 @@ namespace WeatherAppChatham.Controllers
             }
         }
 
+        // Gets weather using Weather Underground API
+        [HttpPost]
         public async Task<ActionResult> GetWUnderground(WeatherModel weather)
         {
             try
             {
                 string address = weather.Address;
-                //string url = wundergroundAPIProp + "/forecast/q/OK/Oklahoma_City.json";
                 string apiKey = "c48aee81124a9dd8";
                 double lat, lon;
                 string formattedAddress;
                 
+                // Retrieves address info using Google's geocode api
                 FindAddress(address, out lat, out lon, out formattedAddress);
                 WeatherModel forecast = await GetWUnderground(apiKey, formattedAddress);
 
@@ -99,6 +83,8 @@ namespace WeatherAppChatham.Controllers
             }
         }
 
+        // Finds address information such as city, state, zip etc. Used for Weather Underground
+        // We will populate the url with either city/state or zip. For foreign locations we add country/city to url. 
         private string FormatAddress(string url)
         {
             string city = null;
@@ -106,6 +92,7 @@ namespace WeatherAppChatham.Controllers
             string country = null;
             string zip = null;
 
+            // addrOutput is populated by Google Geo Code API in FindAddress method.
             for (var i = 0; i < addrOutput.results[0].address_components.Length; i++)
             {
                 if (addrOutput.results[0].address_components[i].types[0].Contains("postal_code"))
@@ -142,9 +129,9 @@ namespace WeatherAppChatham.Controllers
             return url;
         }
 
+        // Find lat and lon from user provided address. Utilize Google's geo code api.
         private void FindAddress(string address, out double lat, out double lon, out string formattedAddress)
         {
-            // Find lat and lon from user provided address
             addrOutput = GetGoogleGeocode(address);
             lat = Convert.ToDouble(addrOutput.results[0].geometry.location.lat);
             lon = Convert.ToDouble(addrOutput.results[0].geometry.location.lng);
@@ -170,6 +157,7 @@ namespace WeatherAppChatham.Controllers
             }
         }
 
+        // Retrieves weather from forecast.io and populates the model
         private WeatherModel GetForecastIO(float lat, float lon, string formattedAddress)
         {
             var request = new ForecastIORequest("d1d02d9b39d4125af3216ea665368a5c", lat, lon, Unit.us);
@@ -179,6 +167,10 @@ namespace WeatherAppChatham.Controllers
             return weather;
         }
 
+        /*
+         * In order to get all our weather needs we need to query 4 different request for Weather Underground.
+         * This takes a performance hit. Hence, we are using asynchronous call to minimize the performance hit
+         */
         private async Task<WeatherModel> GetWUnderground(string apiKey, string addr)
         {
             var ctsDaily = new CancellationTokenSource();

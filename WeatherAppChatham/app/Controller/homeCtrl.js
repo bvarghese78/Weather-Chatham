@@ -2,6 +2,7 @@
 
     $scope.weatherSource = "forecastIO";
 
+    // Sets users lat and lon and loads forecast ctrl
     $scope.showPosition = function (pos) {
         $scope.lat = pos.coords.latitude;
         $scope.lng = pos.coords.longitude;
@@ -13,19 +14,6 @@
         $scope.lng1 = pos.coords.longitude;
     }
 
-    $scope.toggleSource = function () {
-        var temp = $scope.address;
-        $scope.address = null;
-
-    }
-
+    // Gets users current location
     //navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
-
-    //$scope.navigateTo = function () {
-    //    if ($scope.weatherSource == "forecastIO") {
-    //        $location.path('/forecastio');
-    //    } else if ($scope.weatherSource == "wunderground") {
-    //        $location.path('/wunderground');
-    //    }
-    //};
 });

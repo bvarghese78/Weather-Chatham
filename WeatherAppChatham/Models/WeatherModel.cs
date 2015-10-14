@@ -10,7 +10,28 @@ namespace WeatherAppChatham.Models
 {
     public class WeatherModel
     {
+        public Current currentWeather;
+        public Daily dailyWeather;
+
         public string Address { get; set; }
+
+        public WeatherModel() { }
+
+        public WeatherModel(ForecastIOResponse forecast, string addr)
+        {
+            this.currentWeather = new Current(forecast);
+            this.dailyWeather = new Daily(forecast);
+            this.Address = addr;
+        }
+
+        public WeatherModel(dynamic wundergroundCurrent, dynamic wundergroundDaily, dynamic planner, dynamic astronomy, string addr) 
+        {
+            this.currentWeather = new Current(wundergroundCurrent);
+            this.dailyWeather = new Daily(wundergroundDaily, planner, astronomy);
+            this.Address = addr;
+        }
+
+        // Contains current weather forecast
         public class Current
         {
             public int apparentTemperature;   // Feels Like weather in farenheit
@@ -42,8 +63,6 @@ namespace WeatherAppChatham.Models
 
             public Current(dynamic wunderground)
             {
-                //var hTemp = dailyResults.forecast.simpleforecast.forecastday[0].high.fahrenheit;
-
                 this.apparentTemperature = Convert.ToInt32(Convert.ToDouble(wunderground.current_observation.feelslike_f.Value));
                 this.dewPoint = Convert.ToInt32(Convert.ToDouble(wunderground.current_observation.dewpoint_f.Value));
                 this.humidity = wunderground.current_observation.relative_humidity.Value;
@@ -59,6 +78,7 @@ namespace WeatherAppChatham.Models
             }
         }
 
+        // Contains 7 Day weather forecast
         public class DailyForecast
         {
             public int humidity;    // Humidity in percentage
@@ -108,7 +128,7 @@ namespace WeatherAppChatham.Models
         {
             public List<DailyForecast> dailyWeatherList { get; set; }
 
-            public Daily(ForecastIOResponse forecast) 
+            public Daily(ForecastIOResponse forecast)
             {
                 dailyWeatherList = new List<DailyForecast>();
 
@@ -127,25 +147,6 @@ namespace WeatherAppChatham.Models
                     dailyWeatherList.Add(new DailyForecast(weather, planner, astronomy, i));
                 }
             }
-        }
-
-        public Current currentWeather;
-        public Daily dailyWeather;
-
-        public WeatherModel() { }
-
-        public WeatherModel(ForecastIOResponse forecast, string addr)
-        {
-            this.currentWeather = new Current(forecast);
-            this.dailyWeather = new Daily(forecast);
-            this.Address = addr;
-        }
-
-        public WeatherModel(dynamic wundergroundCurrent, dynamic wundergroundDaily, dynamic planner, dynamic astronomy, string addr) 
-        {
-            this.currentWeather = new Current(wundergroundCurrent);
-            this.dailyWeather = new Daily(wundergroundDaily, planner, astronomy);
-            this.Address = addr;
         }
     }
 }

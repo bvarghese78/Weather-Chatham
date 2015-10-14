@@ -1,17 +1,23 @@
 ﻿app.controller("forecastioCtrl", function ($scope, $stateParams, $state, weatherService, toastr) {
+
+    // Params provided by the state
     if ($stateParams.locationName) {
+        $scope.weatherProvider = $stateParams.sourceName;
         $scope.locationName = $stateParams.locationName;
     }
+
+    // Empty MVC weather model
     $scope.mvcmodel = {
         currentWeather: null,
         daily: null,
         address: $scope.locationName
     }
 
-    if ($scope.weatherSource == "forecastIO") {
+    // Retrieves weather from either getForecastIO or getWUnderground
+    if ($scope.weatherProvider == "forecastIO") {
         weatherService.getForecastIO($scope.mvcmodel).then(function (results) {
             $scope.forecastIOInfo = results.data;
-            $scope.source = "Forecast.IO";
+            $scope.source = "forecastio";
             findIcon($scope.forecastIOInfo.currentWeather.icon);
 
             $state.go('forecastio.location', { locationName: $scope.locationName });
@@ -21,8 +27,9 @@
     } else {
         weatherService.getWUnderground($scope.mvcmodel).then(function (results) {
             $scope.forecastIOInfo = results.data;
-            $scope.source = null;
+            $scope.source = "wunderground";
             findIcon($scope.forecastIOInfo.currentWeather.icon);
+            $scope.weatherSource = "wunderground";
 
             $state.go('forecastio.location', { locationName: $scope.locationName });
         }, function (err) {
@@ -30,7 +37,7 @@
         });
     }
     
-
+    // Finds icon based on icon name provided by weather APIs
     function findIcon(iconName) {
         switch (iconName.toLowerCase()) {
             case "clear-day":
@@ -89,11 +96,5 @@
                 $scope.weatherIcon = "wi wi-cloudy";
                 break;
         }
-    }
-
-    $scope.toggleSource = function () {
-        var temp = $scope.address;
-        $scope.address = null;
-
     }
 });

@@ -8,30 +8,25 @@
 </head>
 <body ng-controller="weatherCtrl" class="container">
     <h1>Weather App</h1>
-    <div class="form-group">
-        <fieldset>
-            <legend>Choose weather source</legend>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-offset-4">
-                        <div class="form-group">
-                            <label class="radio-inline"><input type="radio" name="weatherSource" value="forecastIO" ng-model="weatherSource" ng-click="toggleSource()" />Forecast IO</label>
-                            <label class="radio-inline"><input type="radio" name="weatherSource" value="wunderground" ng-model="weatherSource" ng-click="toggleSource()" />Weather Underground</label>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="form-group" style="margin:12px">
+                <label>Choose weather source</label>
+                <label class="radio-inline"><input type="radio" name="weatherSource" value="forecastIO" ng-model="weatherSource" ng-click="toggleSource()" />Forecast IO</label>
+                <label class="radio-inline"><input type="radio" name="weatherSource" value="wunderground" ng-model="weatherSource" ng-click="toggleSource()" />Weather Underground</label>
 
-                            <br />
-                        </div>
-                    </div>
-                </div>
+                <br />
             </div>
-        </fieldset>
+        </div>
 
-        <div class="col-lg-4">
+        <div class="col-md-4">
             <input type="text" class="form-control" placeholder="Enter a location" ng-model="address" />
         </div>
 
         <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
-
     </div>
+       
+    <hr />
     <br />
 
     <div ui-view="center"></div>
