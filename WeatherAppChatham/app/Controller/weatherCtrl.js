@@ -1,22 +1,19 @@
 ﻿app.controller('weatherCtrl', function ($scope, $stateParams, $state, weatherService, toastr) {
     $scope.weatherSource = "forecastIO";
 
-    //$scope.navigateTo = function () {
-    //    if ($scope.weatherSource == "forecastIO") {
-    //        $location.path('/forecastio');
-    //    } else if ($scope.weatherSource == "wunderground") {
-    //        $location.path('/wunderground');
-    //    }
-    //};
+    $scope.toggleSource = function () {
+        var temp = $scope.address;
+        $scope.address = null;
+
+        $state.go('home');
+    }
 
     $scope.search = function () {
         if (!$scope.address) {
             toastr.error("Enter an address to search");
             return;
         }
-        
 
-            $state.go('forecastio.location', { locationName: $scope.address });
-    
+        $state.go('forecastio.location', { locationName: $scope.address });
     }
 });

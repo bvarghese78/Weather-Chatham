@@ -50,7 +50,6 @@ namespace WeatherAppChatham.Controllers
                 string formattedAddress;
                 
                 FindAddress(address, out lat, out lon, out formattedAddress);
-                GetWUnderground(weather);
 
                 // Get weather info from Forecast.io
                 WeatherModel forecast = GetForecastIO((float)lat, (float)lon, formattedAddress);

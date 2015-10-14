@@ -20,8 +20,11 @@
                         <p>Visibility: <span ng-bind="forecastIOInfo.currentWeather.visibility"></span> miles</p>
                     </div>
                 </div>
-                <div class="panel-footer">
+                <div class="panel-footer" ng-if="source">
                     <p><small>Source: <a href="http://forecast.io">Forecast.IO</a></small></p>
+                </div>
+                <div class="panel-footer" ng-if="!source">
+                    <p><small>Source: <a href="http://www.wunderground.com/">Weather Underground</a></small></p>
                 </div>
             </div>
         </div>
@@ -36,21 +39,24 @@
                     <h5>WEATHER DETAILS</h5>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <p>Chance of Rain: <span ng-bind="forecastIOInfo.dailyWeather.dailyWeatherList[0].precipProbablity"></span>%</p>
                         <p>Wind Speed: <span ng-bind="forecastIOInfo.currentWeather.windSpeed"></span> mph</p>
                         <p>Sunrise: <span ng-bind="forecastIOInfo.dailyWeather.dailyWeatherList[0].sunriseTime"></span></p>
                         <p>Sunset: <span ng-bind="forecastIOInfo.dailyWeather.dailyWeatherList[0].sunsetTime"></span></p>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <p>Dew Point: <span ng-bind="forecastIOInfo.currentWeather.dewPoint"></span>° F</p>
                         <p>Humidity: <span ng-bind="forecastIOInfo.currentWeather.humidity"></span>%</p>
                         <p>Pressure: <span ng-bind="forecastIOInfo.currentWeather.pressure"></span>mb</p>
                         <p>Details: <span ng-bind="forecastIOInfo.dailyWeather.dailyWeatherList[0].summary"></span></p>
                     </div>
                 </div>
-                <div class="panel-footer">
+                <div class="panel-footer" ng-if="source">
                     <p><small>Source: <a href="http://forecast.io">Forecast.IO</a></small></p>
+                </div>
+                <div class="panel-footer" ng-if="!source">
+                    <p><small>Source: <a href="http://www.wunderground.com/">Weather Underground</a></small></p>
                 </div>
             </div>
         </div>
@@ -61,8 +67,11 @@
 <hr>
 
 <!--7 day forecast-->
-<div class="col-md-12">
+<div class="col-md-12" ng-if="source">
     <h4>7-Day Forecast <small>(Source: <a href="http://forecast.io">Forecast.IO)</a></small></h4>
+</div>
+<div class="col-md-12" ng-if="!source">
+    <h4>7-Day Forecast <small>(Source: <a href="http://www.wunderground.com/">Weather Underground)</a></small></h4>
 </div>
 
 <!--7 day forecast header-->

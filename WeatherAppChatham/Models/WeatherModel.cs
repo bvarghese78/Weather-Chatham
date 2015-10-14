@@ -16,6 +16,7 @@ namespace WeatherAppChatham.Models
             public int apparentTemperature;   // Feels Like weather in farenheit
             public int dewPoint;  // Dew Point in farenheit
             public string humidity;    // Humidity in percentage
+            public string icon; // Icon name (clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, partly-cloudy-night)
             public float pressure;  // Sea level air pressure in millibars
             public string summary;  // Text summary for current temperature
             public int temperature; // Current Temperature in farenheit
@@ -28,6 +29,7 @@ namespace WeatherAppChatham.Models
                 this.apparentTemperature = Convert.ToInt32(forecast.currently.apparentTemperature);
                 this.dewPoint = Convert.ToInt32(forecast.currently.dewPoint);
                 this.humidity = Convert.ToString(forecast.currently.humidity * 100);
+                this.icon = forecast.currently.icon;
                 this.pressure = forecast.currently.pressure;
                 this.summary = forecast.currently.summary;
                 this.temperature = Convert.ToInt32(forecast.currently.temperature);
@@ -45,6 +47,7 @@ namespace WeatherAppChatham.Models
                 this.apparentTemperature = Convert.ToInt32(Convert.ToDouble(wunderground.current_observation.feelslike_f.Value));
                 this.dewPoint = Convert.ToInt32(Convert.ToDouble(wunderground.current_observation.dewpoint_f.Value));
                 this.humidity = wunderground.current_observation.relative_humidity.Value;
+                this.icon = wunderground.current_observation.icon.Value;
                 this.pressure = float.Parse(wunderground.current_observation.pressure_mb.Value);
                 this.summary = wunderground.current_observation.weather.Value;
                 this.temperature = Convert.ToInt32(wunderground.current_observation.temp_f.Value);
@@ -79,8 +82,8 @@ namespace WeatherAppChatham.Models
 
                 DateTime UnixTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 this.time = UnixTime.AddSeconds(forecast.daily.data[index].time).ToLocalTime().ToLongDateString();
-                this.SunriseTime = UnixTime.AddSeconds(forecast.daily.data[index].sunriseTime).ToLongTimeString();
-                this.SunsetTime = UnixTime.AddSeconds(forecast.daily.data[index].sunsetTime).ToLongTimeString();
+                this.SunriseTime = UnixTime.AddSeconds(forecast.daily.data[index].sunriseTime).ToLongTimeString() + "UTC";
+                this.SunsetTime = UnixTime.AddSeconds(forecast.daily.data[index].sunsetTime).ToLongTimeString() + "UTC";
             }
 
             public DailyForecast(dynamic weather, dynamic planner, dynamic astronomy, int index)

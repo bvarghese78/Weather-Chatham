@@ -13,6 +13,12 @@
         $scope.lng1 = pos.coords.longitude;
     }
 
+    $scope.toggleSource = function () {
+        var temp = $scope.address;
+        $scope.address = null;
+
+    }
+
     //navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
 
     //$scope.navigateTo = function () {
