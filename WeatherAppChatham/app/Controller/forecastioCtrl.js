@@ -1,4 +1,4 @@
-﻿app.controller("forecastioCtrl", function ($scope, $stateParams, weatherService, toastr) {
+﻿app.controller("forecastioCtrl", function ($scope, $stateParams, $state, weatherService, toastr) {
     if ($stateParams.locationName) {
         $scope.locationName = $stateParams.locationName;
     }

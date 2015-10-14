@@ -22,25 +22,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 }
             }
         })
-         .state('forecastio.location', {
-             url: '/{locationName}',
-             views: {
-                 'center@': {
-                     templateUrl: "/app/forecastio.html",
-                     controller: "forecastioCtrl"
-                 }
-             }
-         })
-        .state('wunderground', {
-            url: '/wunderground',
-            views: {
-                'center': {
-                    templateUrl: "/app/wunderground.html",
-                    controller: "weatherCtrl"
-                }
-            }
-        })
-        .state('wunderground.location', {
+        .state('forecastio.location', {
             url: '/{locationName}',
             views: {
                 'center@': {
@@ -48,10 +30,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                     controller: "forecastioCtrl"
                 }
             }
-        });
-
-    //$locationProvider.hashPrefix('!').html5Mode({
-    //    enabled: true,
-    //    requireBase: false
-    //});
+        }
+    );
 });
