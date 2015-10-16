@@ -87,45 +87,9 @@ namespace WeatherAppChatham.Controllers
         // We will populate the url with either city/state or zip. For foreign locations we add country/city to url. 
         private string FormatAddress(string url)
         {
-            string city = null;
-            string state = null;
-            string country = null;
-            string zip = null;
-
-            // addrOutput is populated by Google Geo Code API in FindAddress method.
-            for (var i = 0; i < addrOutput.results[0].address_components.Length; i++)
-            {
-                if (addrOutput.results[0].address_components[i].types[0].Contains("postal_code"))
-                {
-                    zip = addrOutput.results[0].address_components[i].short_name;
-                    break;
-                }
-
-                if (addrOutput.results[0].address_components[i].types[0].Contains("administrative_area_level_1"))
-                    state = addrOutput.results[0].address_components[i].short_name;
-
-                if (addrOutput.results[0].address_components[i].types[0].Contains("locality"))
-                    city = addrOutput.results[0].address_components[i].short_name;
-
-                if (addrOutput.results[0].address_components[i].types[0].Contains("country"))
-                    country = addrOutput.results[0].address_components[i].short_name;
-            }
-
-            if (zip != null)
-                url += zip + ".json";
-            else if (city != null && state != null)
-            {
-                if (city.Contains(" "))
-                    city = city.Replace(" ", "_");
-
-                url += state + "/" + city + ".json";
-            }
-            else if (city != null && country != null)
-                url += country + "/" + city + ".json";
-            else
-            {
-                throw new Exception("Invalid location. Please provide a valid location");
-            }
+            string lat = addrOutput.results[0].geometry.location.lat;
+            string lon = addrOutput.results[0].geometry.location.lng;
+            url += lat + "," + lon + ".json";
             return url;
         }
 
