@@ -17,21 +17,17 @@
     if ($scope.weatherProvider == "forecastIO") {
         weatherService.getForecastIO($scope.mvcmodel).then(function (results) {
             $scope.forecastIOInfo = results.data;
-            $scope.source = "forecastio";
             findIcon($scope.forecastIOInfo.currentWeather.icon);
 
-            $state.go('forecastio.location', { locationName: $scope.locationName });
         }, function (err) {
             toastr.error("Error retrieving weather info from forecast.io" + err);
         });
     } else {
         weatherService.getWUnderground($scope.mvcmodel).then(function (results) {
             $scope.forecastIOInfo = results.data;
-            $scope.source = "wunderground";
             findIcon($scope.forecastIOInfo.currentWeather.icon);
             $scope.weatherSource = "wunderground";
 
-            $state.go('forecastio.location', { locationName: $scope.locationName });
         }, function (err) {
             toastr.error("Error retrieving weather info from weather underground" + err);
         });
