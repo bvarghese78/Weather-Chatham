@@ -18,6 +18,7 @@
         weatherService.getForecastIO($scope.mvcmodel).then(function (results) {
             $scope.forecastIOInfo = results.data;
             findIcon($scope.forecastIOInfo.currentWeather.icon);
+            $scope.source = "forecastio";
 
         }, function (err) {
             toastr.error("Error retrieving weather info from forecast.io" + err);
@@ -27,6 +28,7 @@
             $scope.forecastIOInfo = results.data;
             findIcon($scope.forecastIOInfo.currentWeather.icon);
             $scope.weatherSource = "wunderground";
+            $scope.source = "wunderground";
 
         }, function (err) {
             toastr.error("Error retrieving weather info from weather underground" + err);
