@@ -57,7 +57,7 @@ namespace WeatherAppChatham.Controllers
         public async Task<ActionResult> GetWUnderground(WeatherModel weather)
         {
             try
-            {
+            {                
                 string address = weather.Address;
                 string apiKey = "c48aee81124a9dd8";
                 double lat, lon;
@@ -66,7 +66,6 @@ namespace WeatherAppChatham.Controllers
                 // Retrieves address info using Google's geocode api
                 FindAddress(address, out lat, out lon, out formattedAddress);
                 WeatherModel forecast = await GetWUnderground(apiKey, formattedAddress);
-
                 var camelCaseFormatter = new JsonSerializerSettings();
                 camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 var jsonResult = new ContentResult
@@ -75,6 +74,7 @@ namespace WeatherAppChatham.Controllers
                     ContentType = "application/json"
                 };
 
+                
                 return jsonResult;
             }
             catch (Exception ex)
@@ -154,10 +154,7 @@ namespace WeatherAppChatham.Controllers
             // Astronomy
             var astronomyResults = WUndergroundAstronomy(apiKey, ctsAstronomy);
 
-            await dailyResults;
-            await currentConditionResults;
-            await plannerResults;
-            await astronomyResults;
+            await Task.WhenAll(dailyResults, currentConditionResults, plannerResults, astronomyResults);
             
             WeatherModel weather = new WeatherModel(currentConditionResults.Result, dailyResults.Result, plannerResults.Result, astronomyResults.Result, addr);
             return weather;
@@ -170,7 +167,7 @@ namespace WeatherAppChatham.Controllers
 
             RestClient dailyClient = new RestClient(WUNDERGROUND_URL);
             RestRequest dailyRequest = new RestRequest("/api/" + dailyUrl, Method.GET);
-            var dailyResult = await dailyClient.ExecuteTaskAsync(dailyRequest, ctsDaily.Token);
+            var dailyResult = await dailyClient.ExecuteTaskAsync(dailyRequest, ctsDaily.Token).ConfigureAwait(false);
             var dailyResults = JsonConvert.DeserializeObject<dynamic>(dailyResult.Content);
             return dailyResults;
         }
@@ -182,7 +179,7 @@ namespace WeatherAppChatham.Controllers
 
             RestClient currentConditionClient = new RestClient(WUNDERGROUND_URL);
             RestRequest currentConditionRequest = new RestRequest("/api/" + currentConditionUrl, Method.GET);
-            var currentConditionResult = await currentConditionClient.ExecuteTaskAsync(currentConditionRequest, ctsCC.Token);
+            var currentConditionResult = await currentConditionClient.ExecuteTaskAsync(currentConditionRequest, ctsCC.Token).ConfigureAwait(false);
             var currentConditionResults = JsonConvert.DeserializeObject<dynamic>(currentConditionResult.Content);
             return currentConditionResults;
         }
@@ -198,7 +195,7 @@ namespace WeatherAppChatham.Controllers
 
             RestClient plannerClient = new RestClient(WUNDERGROUND_URL);
             RestRequest plannerRequest = new RestRequest("/api/" + plannerUrl, Method.GET);
-            var plannerResult = await plannerClient.ExecuteTaskAsync(plannerRequest, ctsPlanner.Token);
+            var plannerResult = await plannerClient.ExecuteTaskAsync(plannerRequest, ctsPlanner.Token).ConfigureAwait(false);
             var plannerResults = JsonConvert.DeserializeObject<dynamic>(plannerResult.Content);
             return plannerResults;
         }
@@ -210,7 +207,7 @@ namespace WeatherAppChatham.Controllers
 
             RestClient astronomyClient = new RestClient(WUNDERGROUND_URL);
             RestRequest astronomyRequest = new RestRequest("/api/" + astronomyUrl, Method.GET);
-            var astronomyResult = await astronomyClient.ExecuteTaskAsync(astronomyRequest, ctsAstronomy.Token);
+            var astronomyResult = await astronomyClient.ExecuteTaskAsync(astronomyRequest, ctsAstronomy.Token).ConfigureAwait(false);
             var astronomyResults = JsonConvert.DeserializeObject<dynamic>(astronomyResult.Content);
             return astronomyResults;
         }
